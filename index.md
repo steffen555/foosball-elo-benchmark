@@ -58,5 +58,7 @@ def get_rating_delta(prob_p1_win: float, p1_score: int, p2_score: int):
 We set the score to 0 or 1 and K to 32 per the definition of the original Elo function.
 
 ### Results
-| ![](images/run1_devrank.png) | ![](images/run1_devskill.png) | ![](images/run1_minmaxrating.png) |
+| Deviation form rank | Deviation from skill | Min. and max. ratings |
 |:--:|:--:|:--:|
+| ![](images/run1_devrank.png) | ![](images/run1_devskill.png) | ![](images/run1_minmaxrating.png) |
+
