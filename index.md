@@ -65,11 +65,11 @@ After each game, we save the values of all players to a csv file, which we use t
 This chart shows the average (blue, below) and 90th percentile (red, above) of the differences between the players' ranking determined by the ranking function and their true ranking based on their skill level.
 ![images/run1_devrank.png](images/run1_devrank.png)
 
-### Deviation from true skill level
+#### Deviation from true skill level
 This chart shows the average (blue, below) and 90th percentile (red, above) of the differences between the players' rating and their skill level.
 ![images/run1_devskill.png](images/run1_devskill.png)
 
-### Range of rating scores
+#### Range of rating scores
 This chart shows the minimum and maximum rating score determined by the rating function.
 ![images/run1_minmaxrating.png](images/run1_minmaxrating.png)
 
