@@ -1,37 +1,60 @@
-## Welcome to GitHub Pages
+## Analyzing the quality of Elo-based ranking algorithms for table foosball rankings
 
-You can use the [editor on GitHub](https://github.com/steffen555/foosball-elo-benchmark/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### The game
+The game we are modelling is table soccer, foosball or what you might like to call it. I assume that you know it, but here are some assumptions that we are working from. It is played as 1v1 or 2v2. The first side to get 10 points wins the game.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Initialization
+We start by initializing 201 players with skill levels ranging uniformly from 800 to 1200. The average and median skill level will thus be 1000, which is also the initial value of the players' rating. The skill level is used when calculating the outcome of the games, but is otherwise assumed to be unknown. The skill level is supposed to model how well real life players play, which is not directly measurable (and if it was, then a complicated system like this would not be necessary).
 
-### Markdown
+### Objectives
+The objective of the ranking system is to:
+- obtain an ordering of the players as close as possible to the ordering by skill level
+- obtain a rating of each player which should be as close as possible to their true skill level
+- reach that rating as fast as possible
+- maintain a degree of "fairness"
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Other assumptions
+We have to make some assumptions to not over-complicate the simulations:
+- A player's skill level is constant throughout the series of simulated games
 
-```markdown
-Syntax highlighted code block
+## First run - 1v1 classic Elo
+In the first evaluation, and as a bit of a warm-up, we use the classic Elo ranking system known from chess on 1v1 games. A game is either won or lost, and the winner is the player with the most points at the end of the game. The procedure is described here:
+``` python
+def run():
+    player_list = init_players()
+    for i in range(100000):
+        p1, p2 = get_two_random_players(player_list)
+        prob_p1_win_skill = get_probability_skill(p1, p2)
+        prob_p1_win_rating = get_probability_rating(p1, p2)
+        p1_score, p2_score = get_result(prob_p1_win_skill)
+        rating_delta = get_rating_delta(prob_p1_win_rating, p1_score, p2_score)
+        p1.rating += rating_delta
+        p2.rating -= rating_delta
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+def get_result(prob_p1_win: float):
+    p1_score = 0
+    p2_score = 0
+    while p1_score < 10 and p2_score < 10:
+        rand = random.random()
+        if rand < prob_p1_win:
+            p1_score += 1
+        else:
+            p2_score += 1
+    return p1_score, p2_score
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+First the list of 201 players is initialized. Then 100,000 games are played. For each game, the probability of player 1 winning is calculated based on first skill level (how good the players actually are) and based on rating (how good the rating system assumes that they are). The outcome of the game is calculated based on their skill, and the rating delta (how much to add to player 1 and subtract from player 2) is calculated based on the outcome of the game and the probability based on their ratings. Finally the ratings are updated, and the loop moves on to the next game.
 
-### Jekyll Themes
+For this experiment, the rating delta function is defined as follows:
+``` python
+def get_rating_delta(prob_p1_win: float, p1_score: int, p2_score: int):
+    p1_win_ratio = 0
+    if p1_score > p2_score:
+        p1_win_ratio = 1
+    k = 32
+    return k * (p1_win_ratio - prob_p1_win)
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/steffen555/foosball-elo-benchmark/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+We set the score to 0 or 1 and K to 32 per the definition of the original Elo function.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Results
