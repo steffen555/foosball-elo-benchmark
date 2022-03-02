@@ -61,5 +61,5 @@ We set the score to 0 or 1 and K to 32 per the definition of the original Elo fu
 
 | Deviation from rank | Deviation from skill | Min. and max. ratings |
 |:--:|:--:|:--:|
-| ![](images/run1_devrank.png) | ![](images/run1_devskill.png) | ![](images/run1_minmaxrating.png) |
+| ![images/run1_devrank.png](images/run1_devrank.png) | ![images/run1_devskill.png](images/run1_devskill.png) | ![images/run1_minmaxrating.png](images/run1_minmaxrating.png) |
 
