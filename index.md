@@ -69,7 +69,7 @@ This chart shows the average (blue, below) and 90th percentile (red, above) of t
 This chart shows the average (blue, below) and 90th percentile (red, above) of the differences between the players' rating and their skill level.
 ![images/run1_devskill.png](images/run1_devskill.png)
 
-#### Range of rating scores
-This chart shows the minimum and maximum rating score determined by the rating function.
+#### Final ranks and ratings
+This chart shows the final ranks and ratings comapred to the true ranks and skill levels. The greyed area on the skill vs rating chart shows the span of the skill levels.
 ![images/run1_minmaxrating.png](images/run1_minmaxrating.png)
 
