@@ -71,5 +71,5 @@ This chart shows the average (blue, below) and 90th percentile (red, above) of t
 
 #### Final ranks and ratings
 This chart shows the final ranks and ratings comapred to the true ranks and skill levels. The greyed area on the skill vs rating chart shows the span of the skill levels.
-![images/run1_minmaxrating.png](images/run1_minmaxrating.png)
+![images/run1_finalrankrating.png](images/run1_finalrankrating.png)
 
