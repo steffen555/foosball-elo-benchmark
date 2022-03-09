@@ -103,12 +103,6 @@ def get_result(prob_p1_win: float):
 
 
 def get_rating_delta(prob_p1_win: float, p1_score: int, p2_score: int):
-    if p1_score > p2_score:
-        p1_score = 1
-        p2_score = 0
-    else:
-        p1_score = 0
-        p2_score = 1
     p1_win_ratio = p1_score / (p1_score + p2_score)
     k = 32
     return k * (p1_win_ratio - prob_p1_win)

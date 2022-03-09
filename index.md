@@ -45,7 +45,7 @@ def get_result(prob_p1_win: float):
     return p1_score, p2_score
 ```
 
-First the list of 201 players is initialized. Then 100,000 games are simulated. For each game, the probability of player 1 winning is calculated based on first skill level (how good the players actually are) and based on rating (how good the rating system assumes that they are). The outcome of the game is calculated based on their skill, and the rating delta (how much to add to player 1 and subtract from player 2) is calculated based on the outcome of the game and the probability based on their ratings. Finally the ratings are updated, and the loop moves on to the next game.
+First the list of 201 players is initialized. Then 100,000 games are simulated. For each game, the probability of player 1 winning is calculated based on first skill level (how good the players actually are) and based on rating (how good the rating system assumes that they are). The outcome of the game is calculated based on their skill, and the rating delta (how much to add to player 1 and subtract from player 2) is calculated based on the outcome of the game and the probability based on their ratings. Finally, the ratings are updated, and the loop moves on to the next game.
 
 For this experiment, the rating delta function is defined as follows:
 ``` python
@@ -60,7 +60,7 @@ def get_rating_delta(prob_p1_win: float, p1_score: int, p2_score: int):
 We set the score to 0 or 1 and K to 32 per the definition of the original Elo function.
 
 ### Results
-After each game, we save the values of all players to a csv file, which we use to plot the graphs below. For each evaluatio we will use 3 charts like the ones below.
+After each game, we save the values of all players to a csv file, which we use for plotting the graphs below. For each evaluation we will use 3 charts like the ones below.
 #### Deviation from true ranking
 This chart shows the average (blue, below) and 90th percentile (red, above) of the differences between the players' ranking determined by the ranking function and their true ranking based on their skill level.
 ![images/run1_devrank.png](images/run1_devrank.png)
@@ -70,6 +70,35 @@ This chart shows the average (blue, below) and 90th percentile (red, above) of t
 ![images/run1_devskill.png](images/run1_devskill.png)
 
 #### Final ranks and ratings
-This chart shows the final ranks and ratings comapred to the true ranks and skill levels. The greyed area on the skill vs rating chart shows the span of the skill levels.
+This chart shows the final ranks and ratings compared to the true ranks and skill levels. The greyed area on the skill vs rating chart shows the span of the skill levels.
 ![images/run1_finalrankrating.png](images/run1_finalrankrating.png)
 
+## Introducing margin of victory
+In the first run we viewed a game as either won or lost, while reality is more granular. 
+In reality, a game can be won by a little, like 10-9, or by a lot, like 10-0. This is also known as "margin of victory", and we might be able to use this to better adjust the rating of the players.
+If for example player 1 is expected to win with 66,7 % chance, and the game ends 10-5, then the rating was correct, and nothing should need to change.
+We can implement this by simply changing the get_rating_delta function:
+``` python
+def get_rating_delta(prob_p1_win: float, p1_score: int, p2_score: int):
+    p1_win_ratio = p1_score / (p1_score + p2_score)
+    k = 32
+    return k * (p1_win_ratio - prob_p1_win)
+```
+
+### Results
+Chart descriptions are the same as in the first run.
+#### Deviation from true ranking
+![images/run1_devrank.png](images/run2_devrank.png)
+
+#### Deviation from true skill level
+![images/run1_devskill.png](images/run2_devskill.png)
+
+#### Final ranks and ratings
+![images/run1_finalrankrating.png](images/run2_finalrankrating.png)
+
+## Does it "feel fair"?
+With the introduction of margin of victory, we also introduced the property that a player might get the most points while still losing rating points.
+This can occur when the difference in rating between two players is very large, and the better player does not win "enough" over the less good player.
+Example: the rating system estimates that player 1 will win with 66.67 % chance over player 2. The game ends 10-8 to player 1, which means that player 1 got 55.55 % of the goals - 11.12 percent points less than estimated.
+This means that player 2 actually played better than what the rating system had expected, and from a technical point of view, the ratings should be adjusted in favor of player 2.
+However, player 1 would be considered winner of the game, and thus it can feel unfair to player 1 to lose rating after winning a game.
